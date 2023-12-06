@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "884917158455",
+    "firebase_url": "https://formation-android-c558e-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "formation-android-c558e",
+    "storage_bucket": "formation-android-c558e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:884917158455:android:0b9a6e1e6225d6604435b2",
+        "android_client_info": {
+          "package_name": "com.example.h3messenger"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMY68Y5L3MpGJrnUzmKR3owBktDT6HSXA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
