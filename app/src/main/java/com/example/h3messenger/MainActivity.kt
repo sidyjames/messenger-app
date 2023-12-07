@@ -1,6 +1,7 @@
 package com.example.h3messenger
 
 
+import Navigator
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -61,18 +62,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun ConversationApp() {
-    val currentPage = remember { mutableStateOf("login") }
-    val currentUserForConv = remember { mutableStateOf("Fake User") }
-
-    when (currentPage.value) {
-        "login" -> Greeting { currentPage.value = "home" }
-        "home" -> HomePage(onClick = { user ->
-            currentPage.value = "discussion"
-            currentUserForConv.value = user as String
-        })
-        "discussion" -> DiscussionWith(user = currentUserForConv.value)
-        else -> Text(text = "404 not found")
-    }
+   Navigator()
 }
 
 
