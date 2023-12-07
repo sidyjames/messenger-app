@@ -16,6 +16,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -25,36 +28,34 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.h3messenger.discussionPage.HomeViewModel
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomePage(modifier: Modifier = Modifier,  onClick: (String) -> Unit) {
-    val contacts = listOf("Joseph" to 3, "Momo" to 0, "Nassera" to 1)
+fun HomePage(modifier: Modifier = Modifier,  onClick: (String) -> Unit,
+             viewModel : HomeViewModel = HomeViewModel()
+) {
+
+
+   //val contacts = users.value.map(){it to 3}
+
+    val state by viewModel.uiState.collectAsState()
 
     Column(
         modifier = modifier
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp) // Ajoutez le padding en bas de l'en-tête
-                .background(color = Color.Green),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "Liste des Conversations",
-                style = TextStyle(
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-                    color = Color.Black
-                )
-            )
-        }
 
+        Text(
+            text = state.conversations.size.toString()
+        )
         // Liste de discussions avec 3 contacts
         LazyColumn {
-            items(contacts) { (contact, messageCount) ->
-                ConversationListItem(contact = contact, messageCount = messageCount, onClick)
+            items(state.conversations) { conversation ->
+                ConversationListItem(contact = conversation.name, messageCount = conversation.messageCount, onClick)
             }
         }
     }
@@ -67,7 +68,6 @@ fun ConversationListItem(contact: String, messageCount: Int?, onClick: (String) 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { /* TODO: Ajouter une action au clic de l'élément de liste */ }
             .padding(8.dp)
             .clickable { onClick(contact) }
     ) {

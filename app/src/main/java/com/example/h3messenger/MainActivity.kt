@@ -1,6 +1,8 @@
 package com.example.h3messenger
 
+
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -13,10 +15,38 @@ import com.example.h3messenger.discussionPage.DiscussionWith
 import com.example.h3messenger.discussionPage.Greeting
 import com.example.h3messenger.discussionPage.HomePage
 import com.example.h3messenger.ui.theme.H3MessengerTheme
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : ComponentActivity() {
+
+    private lateinit var auth: FirebaseAuth
+    private lateinit var authStateListener: FirebaseAuth.AuthStateListener
+    override  fun onStart(){
+        super.onStart()
+        auth.addAuthStateListener { authStateListener }
+        auth.signInAnonymously()
+            .addOnCompleteListener(this) {
+                task ->
+                if (!task.isSuccessful){
+                    Toast.makeText(
+                        baseContext,
+                        "Authentication failed",
+                        Toast.LENGTH_SHORT
+                        ).show()
+                }
+            }
+    }
+
+    override  fun onStop() {
+        super.onStop()
+        auth.removeAuthStateListener { authStateListener }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        auth = FirebaseAuth.getInstance()
+        authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
+            val user = firebaseAuth.currentUser
+        }
         setContent {
             H3MessengerTheme {
                 // A surface container using the 'background' color from the theme
@@ -33,14 +63,15 @@ class MainActivity : ComponentActivity() {
 fun ConversationApp() {
     val currentPage = remember { mutableStateOf("login") }
     val currentUserForConv = remember { mutableStateOf("Fake User") }
+
     when (currentPage.value) {
         "login" -> Greeting { currentPage.value = "home" }
-        "home" -> HomePage{user -> currentPage.value = "discussion"
-        currentUserForConv.value = user as String
-        }
-        "discussion" ->DiscussionWith(user = currentUserForConv.value)
+        "home" -> HomePage(onClick = { user ->
+            currentPage.value = "discussion"
+            currentUserForConv.value = user as String
+        })
+        "discussion" -> DiscussionWith(user = currentUserForConv.value)
         else -> Text(text = "404 not found")
-
     }
 }
 
